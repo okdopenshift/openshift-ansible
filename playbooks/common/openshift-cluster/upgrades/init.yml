@@ -1,0 +1,48 @@
+---
+- import_playbook: ../../../init/evaluate_groups.yml
+  vars:
+    # Do not allow adding hosts during upgrade.
+    g_new_master_hosts: []
+    g_new_node_hosts: []
+
+- import_playbook: ../../../init/basic_facts.yml
+- import_playbook: ../../../init/base_packages.yml
+- import_playbook: ../../../init/cluster_facts.yml
+
+- name: Inspect cluster certificates
+  hosts: "{{ l_upgrade_cert_check_hosts }}"
+  any_errors_fatal: true
+  tasks:
+  # During upgrades we want to check if certificates are expiring within six months.
+  # The upgrade will stop if certificates are expiring, requiring the user to either
+  # deploy new certificates, override openshift_certificate_expiry_warning_days or
+  # openshift_certificate_expiry_fail_on_warn in the inventory.
+  - name: Upgrade - Override default openshift_certificate_expiry_warning_days
+    set_fact:
+      openshift_certificate_expiry_warning_days: 183
+    when:
+    - openshift_certificate_expiry_warning_days is undefined or
+      openshift_certificate_expiry_warning_days == ""
+  - name: Upgrade - Override default openshift_certificate_expiry_fail_on_warn
+    set_fact:
+      openshift_certificate_expiry_fail_on_warn: true
+    when:
+    - openshift_certificate_expiry_fail_on_warn is undefined or
+      openshift_certificate_expiry_fail_on_warn == ""
+  - import_role:
+      name: openshift_certificate_expiry
+
+- name: Ensure firewall is not switched during upgrade
+  hosts: "{{ l_upgrade_no_switch_firewall_hosts | default('oo_all_hosts') }}"
+  tasks:
+  - name: Get iptable service details
+    systemd:
+      name: "iptables"
+    ignore_errors: true
+    register: iptables_service
+
+  - name: Set fact os_firewall_use_firewalld FALSE for iptables
+    set_fact:
+      os_firewall_use_firewalld: false
+    when:
+    - iptables_service.status.ActiveState == 'active'

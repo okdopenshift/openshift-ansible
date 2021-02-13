@@ -1,0 +1,174 @@
+{
+    "apiVersion": "v1",
+    "kind": "ImageStream",
+    "metadata": {
+        "annotations": {
+            "openshift.io/display-name": "Red Hat OpenJDK 8",
+            "openshift.io/image.dockerRepositoryCheck": "2017-08-22T18:32:56Z"
+        },
+        "creationTimestamp": "2017-08-22T18:30:49Z",
+        "generation": 2,
+        "name": "redhat-openjdk18-openshift",
+        "namespace": "openshift",
+        "resourceVersion": "889",
+        "selfLink": "/oapi/v1/namespaces/openshift/imagestreams/redhat-openjdk18-openshift",
+        "uid": "0552d267-8768-11e7-be34-0e67cb912a14"
+    },
+    "spec": {
+        "dockerImageRepository": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift",
+        "tags": [
+            {
+                "annotations": {
+                    "description": "Build and run Java applications using Maven and OpenJDK 8.",
+                    "iconClass": "icon-jboss",
+                    "openshift.io/display-name": "Red Hat OpenJDK 8",
+                    "sampleContextDir": "undertow-servlet",
+                    "sampleRepo": "https://github.com/jboss-openshift/openshift-quickstarts",
+                    "supports": "java:8,xpaas:1.0",
+                    "tags": "builder,java,xpaas,openjdk",
+                    "version": "1.0"
+                },
+                "generation": 1,
+                "importPolicy": {},
+                "name": "1.0",
+                "referencePolicy": {
+                    "type": "Source"
+                }
+            },
+            {
+                "annotations": {
+                    "description": "Build and run Java applications using Maven and OpenJDK 8.",
+                    "iconClass": "icon-jboss",
+                    "openshift.io/display-name": "Red Hat OpenJDK 8",
+                    "sampleContextDir": "undertow-servlet",
+                    "sampleRepo": "https://github.com/jboss-openshift/openshift-quickstarts",
+                    "supports": "java:8,xpaas:1.4",
+                    "tags": "builder,java,xpaas,openjdk",
+                    "version": "1.1"
+                },
+                "from": {
+                    "kind": "DockerImage",
+                    "name": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.1"
+                },
+                "generation": 2,
+                "importPolicy": {},
+                "name": "1.1",
+                "referencePolicy": {
+                    "type": "Source"
+                }
+            },
+            {
+                "annotations": null,
+                "from": {
+                    "kind": "DockerImage",
+                    "name": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.1-10"
+                },
+                "generation": 2,
+                "importPolicy": {},
+                "name": "1.1-10",
+                "referencePolicy": {
+                    "type": "Source"
+                }
+            },
+            {
+                "annotations": null,
+                "from": {
+                    "kind": "DockerImage",
+                    "name": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.1-11"
+                },
+                "generation": 2,
+                "importPolicy": {},
+                "name": "1.1-11",
+                "referencePolicy": {
+                    "type": "Source"
+                }
+            },
+            {
+                "annotations": null,
+                "from": {
+                    "kind": "DockerImage",
+                    "name": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.1-8"
+                },
+                "generation": 2,
+                "importPolicy": {},
+                "name": "1.1-8",
+                "referencePolicy": {
+                    "type": "Source"
+                }
+            },
+            {
+                "annotations": null,
+                "from": {
+                    "kind": "DockerImage",
+                    "name": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:latest"
+                },
+                "generation": 2,
+                "importPolicy": {},
+                "name": "latest",
+                "referencePolicy": {
+                    "type": "Source"
+                }
+            }
+        ]
+    },
+    "status": {
+        "dockerImageRepository": "172.30.242.205:5000/openshift/redhat-openjdk18-openshift",
+        "tags": [
+            {
+                "items": [
+                    {
+                        "created": "2017-08-22T18:32:56Z",
+                        "dockerImageReference": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift@sha256:6cc8c860c58536bdf29e61ad8518b77e820486f9daa9d01a4f2a893d549489d7",
+                        "generation": 2,
+                        "image": "sha256:6cc8c860c58536bdf29e61ad8518b77e820486f9daa9d01a4f2a893d549489d7"
+                    }
+                ],
+                "tag": "latest"
+            },
+            {
+                "items": [
+                    {
+                        "created": "2017-08-22T18:32:56Z",
+                        "dockerImageReference": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift@sha256:94447614d04b496c342e3447a4fd72f0f0743feaee9089e50e018514b53515ff",
+                        "generation": 2,
+                        "image": "sha256:94447614d04b496c342e3447a4fd72f0f0743feaee9089e50e018514b53515ff"
+                    }
+                ],
+                "tag": "1.1"
+            },
+            {
+                "items": [
+                    {
+                        "created": "2017-08-22T18:32:56Z",
+                        "dockerImageReference": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift@sha256:70c9fd7db73eee95f564f8221ef58eb59cf34f66bb5d98cb0a4dfabc18075e93",
+                        "generation": 2,
+                        "image": "sha256:70c9fd7db73eee95f564f8221ef58eb59cf34f66bb5d98cb0a4dfabc18075e93"
+                    }
+                ],
+                "tag": "1.1-11"
+            },
+            {
+                "items": [
+                    {
+                        "created": "2017-08-22T18:32:56Z",
+                        "dockerImageReference": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift@sha256:314fd4e661387f33534517b293a8ec4d4f55186ec283ae2b94ab4b86d0729c5d",
+                        "generation": 2,
+                        "image": "sha256:314fd4e661387f33534517b293a8ec4d4f55186ec283ae2b94ab4b86d0729c5d"
+                    }
+                ],
+                "tag": "1.1-10"
+            },
+            {
+                "items": [
+                    {
+                        "created": "2017-08-22T18:32:56Z",
+                        "dockerImageReference": "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift@sha256:60670a75b867b2a65f8c2f526ff3ab9d0d8cf2fa39b352928d7014b50d54ff34",
+                        "generation": 2,
+                        "image": "sha256:60670a75b867b2a65f8c2f526ff3ab9d0d8cf2fa39b352928d7014b50d54ff34"
+                    }
+                ],
+                "tag": "1.1-8"
+            }
+        ]
+    }
+}

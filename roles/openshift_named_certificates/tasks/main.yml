@@ -1,0 +1,104 @@
+---
+- set_fact:
+    parsed_named_certificates: "{{ named_certificates | lib_utils_oo_parse_named_certificates(named_certs_dir, internal_hostnames) }}"
+  when: named_certificates | length > 0
+  delegate_to: localhost
+  run_once: true
+
+- openshift_facts:
+    role: master
+    system_facts: "{{ vars_openshift_facts_system_facts }}"
+    local_facts:
+      named_certificates: "{{ parsed_named_certificates | default([]) }}"
+    additive_facts_to_overwrite:
+    - "{{ 'master.named_certificates' if overwrite_named_certs | bool else omit }}"
+
+- name: Check if the named certificates directory exists
+  stat:
+    path: "{{ named_certs_dir }}"
+    get_checksum: false
+    get_attributes: false
+    get_mime: false
+  register: named_certs_dir_stat
+
+- name: Backup Named Certificates
+  command: >
+    tar -czvf /etc/origin/master-named-certificates-backup-{{ ansible_date_time.epoch }}.tgz
+    {{ named_certs_dir }}
+  when: named_certs_dir_stat.stat.exists
+
+- name: Clear named certificates
+  file:
+    path: "{{ named_certs_dir }}"
+    state: absent
+  when: overwrite_named_certs | bool
+
+- name: Ensure named certificate directory exists
+  file:
+    path: "{{ named_certs_dir }}"
+    state: directory
+    mode: 0700
+
+- name: Land named certificates
+  copy:
+    src: "{{ item.certfile }}"
+    dest: "{{ named_certs_dir }}/{{ item.certfile | basename }}"
+    remote_src: "{{ openshift_named_certificates_from_remote | default(False) }}"
+  with_items: "{{ named_certificates }}"
+
+- name: Land named certificate keys
+  copy:
+    src: "{{ item.keyfile }}"
+    dest: "{{ named_certs_dir }}/{{ item.keyfile | basename }}"
+    remote_src: "{{ openshift_named_certificates_from_remote | default(False) }}"
+    mode: 0600
+  with_items: "{{ named_certificates }}"
+
+- name: Check if the cafile is configured
+  set_fact:
+    named_certificates_ca_file_defined: "{{ named_certificates | lib_utils_oo_collect('cafile')}}"
+
+- name: Land named CA certificates
+  copy:
+    src: "{{ item }}"
+    dest: "{{ named_certs_dir }}/{{ item | basename }}"
+    remote_src: "{{ openshift_named_certificates_from_remote | default(False) }}"
+    mode: 0600
+  with_items: "{{ named_certificates | lib_utils_oo_collect('cafile') }}"
+
+- name: Verify if the ca-bundle contains the CA to trust the named certificate
+  command: >
+    openssl verify -CAfile /etc/origin/master/ca-bundle.crt "{{ named_certs_dir }}{{ item.certfile | basename }}"
+  with_items: "{{ named_certificates }}"
+  register: ca_bundle_result
+  when: named_certificates_ca_file_defined | length > 0
+  changed_when: false
+  failed_when: false
+
+- name: Append the custom ca to the bundle
+  block:
+  - name: Create temp directory
+    command: mktemp -d /tmp/openshift-ansible-XXXXXX
+    register: openshift_ca_named_certificates_tmpdir
+  - name: Copy the ca-bundle.crt to temp directory
+    copy:
+      src: /etc/origin/master/ca-bundle.crt
+      dest: "{{ openshift_ca_named_certificates_tmpdir.stdout }}"
+      remote_src: true
+  - name: Copy the cafile named certificates to temp directory
+    copy:
+      src: "{{ named_certs_dir }}/{{ item | basename }}"
+      dest: "{{ openshift_ca_named_certificates_tmpdir.stdout }}"
+      remote_src: true
+    with_items: "{{ named_certificates | lib_utils_oo_collect('cafile') }}"
+  - name: Assemble all files into ca-bundle.crt in master directory
+    assemble:
+      src: "{{ openshift_ca_named_certificates_tmpdir.stdout }}"
+      dest: "/etc/origin/master/ca-bundle.crt"
+      mode: 0644
+      owner: root
+      group: root
+  when:
+  - named_certificates_ca_file_defined | length > 0
+  - ca_bundle_result.results[0].rc is defined
+  - ca_bundle_result.results[0].rc != 0

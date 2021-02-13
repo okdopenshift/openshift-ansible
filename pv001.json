@@ -1,0 +1,25 @@
+{
+  "kind": "PersistentVolume",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "glusterfs-f8c612ee",
+    "creationTimestamp": null,
+    "labels": {
+      "storage-tier": "gold"
+    }
+  },
+  "spec": {
+    "capacity": {
+      "storage": "1Gi"
+    },
+    "glusterfs": {
+      "endpoints": "glusterfs-cluster",
+      "path": "vol_f8c612eea57556197511f6b8c54b6070"
+    },
+    "accessModes": [
+      "ReadWriteMany"
+    ],
+    "persistentVolumeReclaimPolicy": "Retain"
+  },
+  "status": {}
+}

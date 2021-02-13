@@ -1,0 +1,13 @@
+# Versions are pinned to prevent pypi releases arbitrarily breaking
+# tests with new APIs/semantics. We want to update versions deliberately.
+ansible==2.9.13
+boto==2.44.0
+click==6.7
+pyOpenSSL==17.5.0
+# We need to disable ruamel.yaml for now because of test failures
+#ruamel.yaml
+six==1.10.0
+shade==1.24.0
+passlib==1.6.5
+dogpile.cache==0.9.2
+pyrsistent==0.16.1
