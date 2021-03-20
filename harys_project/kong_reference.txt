@@ -1,0 +1,5 @@
+https://github.com/john-deng/kong-openshift
+=> https://github.com/john-deng/kong-openshift.git
+
+https://github.com/mvilche/kong-api-gateway-openshift
+=> https://github.com/mvilche/kong-api-gateway-openshift.git
